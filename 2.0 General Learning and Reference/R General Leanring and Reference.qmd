@@ -1,5 +1,5 @@
 ---
-title: "R General Leanring and Reference"
+title: "R General Learning and Reference"
 date: "December 2023"
 toc: true
 toc-depth: 3
