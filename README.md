@@ -1,7 +1,6 @@
 # Learning and Reference
+How-tos and examples. Please feel free to add your own or add tot he existing ones.  
 
-How-tos and examples
+## Contents
 
-- Find Tyrel's collectio of R notes.
-- Add my own. 
-
+[R Setup and Maintenance](https://github.com/TTC-ENW/learning_and_reference/blob/main/1.0%20R%20Setup%20and%20Maintenance/R%20Setup%20and%20Maintenance.html)
