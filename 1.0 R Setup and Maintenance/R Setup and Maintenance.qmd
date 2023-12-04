@@ -1,0 +1,32 @@
+---
+title: "R Setup and Maintenance"
+format: 
+  html:
+    toc: true
+---
+
+## Keeping R Up To Date
+
+The info bar above the console window indicates the R version you are using. When a new version of R is available, it must be done in the basic R interface (RGui) (i.e., not in RStudio).
+
+```{r}
+#| eval: false
+
+install.packages("installr")
+library(installr)
+updateR()
+```
+
+After R has been updated in the basic R interface, you will probably need to tell RStudio where to find the version you would like to use (usually the latest) under Tools \> Global Options.
+
+## Keeping RStudio Up To Date
+
+RStudio will let you know when its time.
+
+## Package Updates
+
+Its good to keep your packages up to date. There will be a time when a package you are using is not working because some of the dependencies have been updated and your main package has not.
+
+## Github Setup
+
+Use these instructions for setting up RStudio to use Git. <https://happygitwithr.com/>
