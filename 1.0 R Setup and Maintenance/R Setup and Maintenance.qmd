@@ -1,8 +1,14 @@
 ---
 title: "R Setup and Maintenance"
-format: 
+date: "December 2023"
+toc: true
+toc-depth: 3
+number-sections: false
+format:
   html:
-    toc: true
+    code-fold: false
+    page-layout: full
+editor: visual
 ---
 
 ## Keeping R Up To Date
