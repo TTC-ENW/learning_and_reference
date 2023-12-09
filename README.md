@@ -1,5 +1,5 @@
 # Learning and Reference
-How-tos and examples. Please feel free to add your own or add to existing material.  
+How-tos, examples, and resources. Please feel free to add your own or add to existing material.  
 
 ## Contents
 
