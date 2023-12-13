@@ -15,8 +15,16 @@ editor: visual
 
 There are so many resources for learning R. Different people will have different suggestions. Please feel free to share your own favourite learning approaches.
 
-**R For Data Science**
+[R for Data Science](https://r4ds.had.co.nz/)
 
 I think a good entry to R is the book [R for Data Science](https://r4ds.had.co.nz/). This book emphasizes the Tidyverse packages (e.g., ggplot, dplyr, and many others). The Tidyverse package functions over base R programming because they are more intuitive and use a bit more natural language. However, it is very important to know and understand base R syntax and functions; you will see it and need to be able to understand it. And there are some cases where it will be preferable. (Jeff M)
+
+[Big Book of R](https://www.bigbookofr.com/)
+
+A reference nad resource list on all sorts of R topics.
+
+[What They Forgot to Teach You About R](rstats.wtf)
+
+Talks about workflow and "personal R administration", and debugging.
 
 ## Other Resources
