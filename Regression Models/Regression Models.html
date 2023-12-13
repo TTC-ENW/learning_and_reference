@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Jeff Matheson">
+<meta name="dcterms.date" content="2023-12-12">
+
+<title>Regression Models</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="Regression Models_files/libs/clipboard/clipboard.min.js"></script>
+<script src="Regression Models_files/libs/quarto-html/quarto.js"></script>
+<script src="Regression Models_files/libs/quarto-html/popper.min.js"></script>
+<script src="Regression Models_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="Regression Models_files/libs/quarto-html/anchor.min.js"></script>
+<link href="Regression Models_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="Regression Models_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="Regression Models_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="Regression Models_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="Regression Models_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body>
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-full">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#general-reference" id="toc-general-reference" class="nav-link" data-scroll-target="#general-reference">General Reference</a></li>
+  <li><a href="#packages" id="toc-packages" class="nav-link" data-scroll-target="#packages">Packages</a>
+  <ul class="collapse">
+  <li><a href="#packages-for-assessing-data-distribution" id="toc-packages-for-assessing-data-distribution" class="nav-link" data-scroll-target="#packages-for-assessing-data-distribution">Packages for assessing data distribution</a></li>
+  <li><a href="#packages-for-regression-type-analyses" id="toc-packages-for-regression-type-analyses" class="nav-link" data-scroll-target="#packages-for-regression-type-analyses">Packages for regression-type analyses</a></li>
+  <li><a href="#packages-for-evaluating-model-fit" id="toc-packages-for-evaluating-model-fit" class="nav-link" data-scroll-target="#packages-for-evaluating-model-fit">Packages for evaluating model fit</a></li>
+  <li><a href="#common-packages-for-interpretting-results" id="toc-common-packages-for-interpretting-results" class="nav-link" data-scroll-target="#common-packages-for-interpretting-results">Common packages for interpretting results</a></li>
+  <li><a href="#helpers" id="toc-helpers" class="nav-link" data-scroll-target="#helpers">Helpers</a></li>
+  </ul></li>
+  <li><a href="#mixed-models" id="toc-mixed-models" class="nav-link" data-scroll-target="#mixed-models">Mixed Models</a></li>
+  <li><a href="#typical-steps-for-regression" id="toc-typical-steps-for-regression" class="nav-link" data-scroll-target="#typical-steps-for-regression">Typical steps for regression</a>
+  <ul class="collapse">
+  <li><a href="#step-1.-visualize-distribution" id="toc-step-1.-visualize-distribution" class="nav-link" data-scroll-target="#step-1.-visualize-distribution"><strong>STEP 1. Visualize distribution</strong></a></li>
+  <li><a href="#step-2.-fit-model" id="toc-step-2.-fit-model" class="nav-link" data-scroll-target="#step-2.-fit-model"><strong>STEP 2. Fit model</strong></a></li>
+  <li><a href="#step-3.-compare-models" id="toc-step-3.-compare-models" class="nav-link" data-scroll-target="#step-3.-compare-models"><strong>STEP 3. Compare models</strong></a></li>
+  <li><a href="#step-4.-assess-model-fit." id="toc-step-4.-assess-model-fit." class="nav-link" data-scroll-target="#step-4.-assess-model-fit."><strong>STEP 4. Assess model fit.</strong></a></li>
+  <li><a href="#step-5.-estimate-means-and-plot" id="toc-step-5.-estimate-means-and-plot" class="nav-link" data-scroll-target="#step-5.-estimate-means-and-plot"><strong>STEP 5. Estimate Means and Plot</strong></a></li>
+  <li><a href="#many-models" id="toc-many-models" class="nav-link" data-scroll-target="#many-models">Many Models</a></li>
+  </ul></li>
+  <li><a href="#prediction-and-confidence-intervals" id="toc-prediction-and-confidence-intervals" class="nav-link" data-scroll-target="#prediction-and-confidence-intervals">Prediction and Confidence Intervals</a></li>
+  <li><a href="#generalized-additive-models" id="toc-generalized-additive-models" class="nav-link" data-scroll-target="#generalized-additive-models">Generalized Additive Models</a></li>
+  <li><a href="#spatial-autocorrelation" id="toc-spatial-autocorrelation" class="nav-link" data-scroll-target="#spatial-autocorrelation">Spatial Autocorrelation</a></li>
+  <li><a href="#regression-slopes" id="toc-regression-slopes" class="nav-link" data-scroll-target="#regression-slopes">Regression Slopes</a>
+  <ul class="collapse">
+  <li><a href="#examples" id="toc-examples" class="nav-link" data-scroll-target="#examples">Examples</a></li>
+  </ul></li>
+  </ul>
+</nav>
+</div>
+<main class="content column-page-left" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Regression Models</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Jeff Matheson </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">December 12, 2023</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="introduction" class="level1">
+<h1>Introduction</h1>
+<p>These are my personal notes on regression-type models. They were initial intended for personal use and are therefore a bite rough. I’ll update and clean it over time.</p>
+<p>The dune data in the vegan package is good example dataset for species occurrence. Use the dune data to work up the example code.</p>
+</section>
+<section id="general-reference" class="level1">
+<h1>General Reference</h1>
+<p>There is some good material here on models and model viz.&nbsp;<a href="https://uvastatlab.github.io/phdplus/index.html" class="uri">https://uvastatlab.github.io/phdplus/index.html</a></p>
+<p>Reminder about descriptive &amp; explanatory models versus predictive models. Descriptive and explanatory model fit usually evaluted using AIC or similar. Predictive models tested with prediction accuracy (e.g., AUC).</p>
+<p><a href="https://www.datascienceblog.net/post/commentary/inference-vs-prediction/">Inference vs Prediction</a></p>
+<p>Zero-inflated models:</p>
+<p><a href="https://data.marcoplebani.com/zero-inflated-models/?fbclid=IwAR17JRYLuwbwRK-WdVxAZIgDt45ZX8LvuaESltE-yLCduxF4EjyEYEak-hI">Zero-inflated models</a></p>
+</section>
+<section id="packages" class="level1">
+<h1>Packages</h1>
+<section id="packages-for-assessing-data-distribution" class="level2">
+<h2 class="anchored" data-anchor-id="packages-for-assessing-data-distribution">Packages for assessing data distribution</h2>
+<p>First use simple frequency histograms using <code>hist()</code> of ggplot. <code>library(vcd)</code> Fits a discrete (count data) distribution for goodness-of-fit tests.</p>
+</section>
+<section id="packages-for-regression-type-analyses" class="level2">
+<h2 class="anchored" data-anchor-id="packages-for-regression-type-analyses">Packages for regression-type analyses</h2>
+<p>Common packages for regression-type analyses library(lme4) GLMMs library(MASS) Negative Binomial GLM library(glmmTMB) for nb and zi, but can do everyhting else too library(pscl) zero-inflated models library(mgcv) GAM</p>
+</section>
+<section id="packages-for-evaluating-model-fit" class="level2">
+<h2 class="anchored" data-anchor-id="packages-for-evaluating-model-fit">Packages for evaluating model fit</h2>
+<p>library(DHARMa) Analysis of residuals for mixed models</p>
+</section>
+<section id="common-packages-for-interpretting-results" class="level2">
+<h2 class="anchored" data-anchor-id="common-packages-for-interpretting-results">Common packages for interpretting results</h2>
+<p>library(visreg) regression visualization library(MuMIn) model selection library(effects) for extracting effects terms. Use effects or Alleffects library(emmeans) Estimate marginal means</p>
+</section>
+<section id="helpers" class="level2">
+<h2 class="anchored" data-anchor-id="helpers">Helpers</h2>
+<p>library(broom) Tidy results tables for exporting and printing library(broom.mixed) Same as above, but for mixed models</p>
+<p>library(corrplot) Come back to this and find home</p>
+</section>
+</section>
+<section id="mixed-models" class="level1">
+<h1>Mixed Models</h1>
+<p>This is a really good resource.</p>
+<p><a href="https://ourcodingclub.github.io/tutorials/mixed-models/">Introduction to linear mixed models</a></p>
+<p>Note implicit vs.&nbsp;explicit nesting.</p>
+<p>Explicit nesting can be done by creating a new variable:</p>
+<p>dragons &lt;- within(dragons, sample &lt;- factor(mountainRange:site))</p>
+<p>Good resource from Ben Bolker</p>
+<p><a href="http://bbolker.github.io/mixedmodels-misc/glmmFAQ.html">GLMM FAQ (bbolker.github.io)</a></p>
+<p>Good walkthrough from Ben Bolker</p>
+<p>Recording: <a href="https://youtu.be/iFikMDuNeVM"><strong>https://youtu.be/iFikMDuNeVM</strong></a></p>
+<p><a href="https://github.com/eco4cast/Statistical-Methods-Seminar-Series/tree/main/bolker_mixedmodels">Statistical-Methods-Seminar-Series/bolker_mixedmodels at main · eco4cast/Statistical-Methods-Seminar-Series (github.com)</a></p>
+</section>
+<section id="typical-steps-for-regression" class="level1">
+<h1>Typical steps for regression</h1>
+<section id="step-1.-visualize-distribution" class="level2">
+<h2 class="anchored" data-anchor-id="step-1.-visualize-distribution"><strong>STEP 1. Visualize distribution</strong></h2>
+<pre><code>library(vegan)
+data(dune)
+data(dune.env)</code></pre>
+<p>Make a histogram using hist() or ggplot(); visually inspect For count data, use package ‘vcd’ to fit possible disubutions fit.p &lt;- goodfit(dat$Richness, type = “poisson”) also binomial and nbinomial summary(fit.p) rootogram(fit.p)</p>
+</section>
+<section id="step-2.-fit-model" class="level2">
+<h2 class="anchored" data-anchor-id="step-2.-fit-model"><strong>STEP 2. Fit model</strong></h2>
+<p>Use <code>dredge(model.full)</code> to fit all possible combinations of variables.</p>
+<p>use tibble to tidy up the output from dredge.</p>
+<p>Check multi-collinearity.</p>
+<p>Use car::vif.</p>
+<p>If using glmmTMB, need to use another one like misty.</p>
+<p>Zuur recommends that vif &lt; 2 are fine. Other say vif &lt; 5 are fine.</p>
+</section>
+<section id="step-3.-compare-models" class="level2">
+<h2 class="anchored" data-anchor-id="step-3.-compare-models"><strong>STEP 3. Compare models</strong></h2>
+<p>This is a good intro to model selection:</p>
+<p><a href="https://uoftcoders.github.io/rcourse/lec09-model-selection.html">Model selection and model averaging</a></p>
+<p>Comare models using package ‘MuMin’. model.sel(m1, m2, m3, m4) ** Figure out weights and model averaging</p>
+<p>Here is some example wording to describe models from Stewart et al.&nbsp;(2020):</p>
+<blockquote class="blockquote">
+<p>We used the full dataset to create competing Poisson generalized linear mixed models (GLMMs) to predict species abundance using site as a random effect. We included a null model (intercept only), a model with fixed effect for survey type (three levels: in-person, SM2, and SM4), a model with noise as a fixed effect, a model with both noise and survey type as a fixed effect (survey type + noise), and a model that incorporated the interaction between noise and survey type (survey type * noise). Noise level (0–4) was treated as a linear covariate. We did not test for a year effect because we compared counts conducted at the exact same time and place; therefore, year effect is controlled for by the paired design. We used Akaike’s Information Criterion (AIC) to select the most parsimonious of the five models (Akaike 1973, Beier et al.&nbsp;2001).</p>
+</blockquote>
+<p>Here is another one:</p>
+<blockquote class="blockquote">
+<p>We used AIC model selection to distinguish among a set of possible models describing the relationship between age, sex, sweetened beverage consumption, and body mass index. The best-fit model, carrying 96% of the cumulative model weight, included every parameter with no interaction effects.</p>
+</blockquote>
+<p>There are some other approaches to variable selection. BAM uses “branching” forward stepwise variable selection.</p>
+<p>This might be a solution to trying to fit a full model that has too many variables to fit a model too.</p>
+</section>
+<section id="step-4.-assess-model-fit." class="level2">
+<h2 class="anchored" data-anchor-id="step-4.-assess-model-fit."><strong>STEP 4. Assess model fit.</strong></h2>
+<p>If glm, view standard diagnostic plots <code>plot(model1)</code> or Examine Residuals for Gaussian <code>qqnorm(residuals(bestmod))qqline(residuals(bestmod))plot(bestmod,MonYear~resid(.))</code></p>
+<p>Visreg?</p>
+<p>For non-Gaussian and mixed models, use package ‘DHARMa’ to simulate residuals.</p>
+<p>res &lt;- simulateResiduals(fittedModel = bestmod) plot(res) testDispersion(res) There are other test in ‘DHAMRa’ to explore. Test for overdispersion. Unlear of these work for mixed models.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">deviance</span>(bestmod)<span class="sc">/</span><span class="fu">df.residual</span>(bestmod)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># or</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>overdisp_fun <span class="ot">&lt;-</span> <span class="cf">function</span>(model) {</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  rdf <span class="ot">&lt;-</span> <span class="fu">df.residual</span>(model)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  rp <span class="ot">&lt;-</span> <span class="fu">residuals</span>(model,<span class="at">type=</span><span class="st">"pearson"</span>)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  Pearson.chisq <span class="ot">&lt;-</span> <span class="fu">sum</span>(rp<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  prat <span class="ot">&lt;-</span> Pearson.chisq<span class="sc">/</span>rdf</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  pval <span class="ot">&lt;-</span> <span class="fu">pchisq</span>(Pearson.chisq, <span class="at">df=</span>rdf, <span class="at">lower.tail=</span><span class="cn">FALSE</span>)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="at">chisq=</span>Pearson.chisq,<span class="at">ratio=</span>prat,<span class="at">rdf=</span>rdf,<span class="at">p=</span>pval)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="fu">overdisp_fun</span>(bestmod)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Goodness-of-fit (R2) should be reported. For mixed models, it can be estimated using</p>
+<p><code>library(MuMIn)</code>, <code>r.squaredGLMM()</code></p>
+<p>Performance of the model can also be evaluated by simulating datasets from the model.</p>
+<p>Need to figure out how to do that.</p>
+<p>AUC</p>
+<p>For binary classification</p>
+<p><a href="https://thestatsgeek.com/2014/05/05/area-under-the-roc-curve-assessing-discrimination-in-logistic-regression/">Area under the ROC curve - assessing discrimination in logistic regression</a></p>
+<p>pROC and ROCR are the two main packages</p>
+</section>
+<section id="step-5.-estimate-means-and-plot" class="level2">
+<h2 class="anchored" data-anchor-id="step-5.-estimate-means-and-plot"><strong>STEP 5. Estimate Means and Plot</strong></h2>
+<ul>
+<li>Plot all effects ae &lt;- allEffects(bestmod) plot(ae, residuals=“TRUE”) ae Or plot individual effects e &lt;- predictorEffect(“BHC7”, bestmod) plot(e)</li>
+<li>Package EMMEANS for marginal means</li>
+<li>To make predictions, may need to create a grid. expand.grip, tidyr:: expand_grid, modelr::data_grid</li>
+<li>What a out predictions for continuous variables? emmE &lt;- as.data.frame(emmeans(pois.m2, specs=“xEasting”, at=list(xEasting=seq(-2.03, 1.13, length.out=50))))</li>
+</ul>
+<p><strong>Extract the coefficients data frame</strong></p>
+<p><code>x &lt;-summary.glm(Count.model1)$coefficients</code></p>
+</section>
+<section id="many-models" class="level2">
+<h2 class="anchored" data-anchor-id="many-models">Many Models</h2>
+<p>Use the tidy way to first nest the data and then save model outputs in list dataframe. {broomExtra} package also has some important tools. See:<a href="https://r4ds.had.co.nz/many-models.html">R for Data Science</a><a href="https://cran.r-project.org/web/packages/broom/vignettes/broom_and_dplyr.html">Broom and Tidy</a></p>
+<p>Example below from BBFM cavity nest analysis.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>decay_nest <span class="ot">&lt;-</span> decay_nest <span class="sc">%&gt;%</span> </span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">model =</span> <span class="fu">map</span>(decay_nest<span class="sc">$</span>data, decay_model),</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">tidied =</span> <span class="fu">map</span>(model, tidy),</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">glanced =</span> <span class="fu">map</span>(model, glance),</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>         <span class="at">augmented =</span> <span class="fu">map</span>(model, augment),</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>         <span class="at">means =</span> <span class="fu">map</span>(model, </span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>                     <span class="sc">~</span><span class="fu">as.data.frame</span>(<span class="fu">emmeans</span>(.x, <span class="st">"Structural_Stage"</span>,</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>                                            <span class="at">type =</span> <span class="st">"response"</span>)))</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>         ) <span class="sc">%&gt;%</span> </span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(means)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<hr>
+</section>
+</section>
+<section id="prediction-and-confidence-intervals" class="level1">
+<h1>Prediction and Confidence Intervals</h1>
+<p>Difference between the two.</p>
+<p>For mixed models, ideally, would estimate using bootMer, but time-consuming.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>boot1 <span class="ot">&lt;-</span> lme4<span class="sc">::</span><span class="fu">bootMer</span>(mod_top, predictors, <span class="at">FUN =</span> <span class="st">"mean"</span>, <span class="at">nsim=</span><span class="dv">10</span>, <span class="at">re.form =</span> <span class="cn">NA</span>, <span class="at">seed =</span> <span class="dv">123</span>, <span class="at">type=</span><span class="st">"parametric"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>There are ways to approximate. See Bolker glmmTMB guide for text.</p>
+<p>There is also this package below:</p>
+<p>library(merTools) preds &lt;- predictInterval(lme1, newdata = newDat, n.sims = 999)</p>
+<p>Comparison of methods:</p>
+<p><a href="https://cran.r-project.org/web/packages/merTools/vignettes/Using_predictInterval.html">Prediction Intervals from merMod Objects</a></p>
+<p>See CZN Birds-v2</p>
+</section>
+<section id="generalized-additive-models" class="level1">
+<h1>Generalized Additive Models</h1>
+<p>See Gavin Simpson seminar on GAMs. <a href="https://github.com/gavinsimpson/intro-gam-webinar-2020" class="uri">https://github.com/gavinsimpson/intro-gam-webinar-2020</a></p>
+<ul>
+<li>A GAM is a sum of smooth functions (basis functions or small curves).</li>
+<li>Start with using REML as default. Most robust to violation of assumptions.</li>
+<li>Categorical variables - can’t smooth, but can be included in the model. Can be used as a random effect as well.</li>
+<li>Random effects can be fit in gam() and bam() if simple, without having to use gamm() of gamm4(). bs = ‘re’. See slids for more explanation of options.</li>
+</ul>
+<p>Next steps from Gavin Simpson:</p>
+<ul>
+<li>Read Simon Wood’s book!</li>
+<li>Lots more material on our ESA GAM Workshop site <a href="https://noamross.github.io/mgcv-esa-workshop/" class="uri">https://noamross.github.io/mgcv-esa-workshop/</a></li>
+<li>Noam Ross’ free GAM Course <a href="https://noamross.github.io/gams-in-r-course/" class="uri">https://noamross.github.io/gams-in-r-course/</a></li>
+</ul>
+<p>A couple of papers:</p>
+<ol type="1">
+<li>Simpson, G.L., 2018. Modelling Palaeoecological Time Series Using Generalised Additive Models. Frontiers in Ecology and Evolution 6, 149. <a href="https://doi.org/10.3389/fevo.2018.00149" class="uri">https://doi.org/10.3389/fevo.2018.00149</a></li>
+<li>Pedersen, E.J., Miller, D.L., Simpson, G.L., Ross, N., 2019. Hierarchical generalized additive models in ecology: an introduction with mgcv. PeerJ 7, e6876. <a href="https://doi.org/10.7717/peerj.6876" class="uri">https://doi.org/10.7717/peerj.6876</a> ]</li>
+</ol>
+<p>Also see:</p>
+<p><a href="https://data.marcoplebani.com/category/generalised-additive-models-gams/">Generalised additive models</a></p>
+</section>
+<section id="spatial-autocorrelation" class="level1">
+<h1>Spatial Autocorrelation</h1>
+<p><a href="https://rfunctions.blogspot.com/2017/06/how-to-identify-and-remove-spatial.html?fbclid=IwAR1FZWk8UQXFdbou4FH9zhXA7m85YzuDCe3_3mPhv5XkjOhLPSvshG2Etd4">How to Identify and Remove Spatial Autocorrelation Effects</a></p>
+<p>From Bolker, to check for spatial autocorrelation:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>offdat<span class="sc">$</span>res1 <span class="ot">&lt;-</span> <span class="fu">residuals</span>(mod_top)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(offdat, <span class="fu">aes</span>(Easting, Northing, <span class="at">colour =</span> res1, <span class="at">size =</span> <span class="fu">abs</span>(res1))) <span class="sc">+</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_colour_gradient2</span>() <span class="sc">+</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_size</span>(<span class="at">range=</span><span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">7</span>)) <span class="sc">+</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Here is a vignette on covariance structures.</p>
+<p><a href="https://cran.r-project.org/web/packages/glmmTMB/vignettes/covstruct.html">Covariance structures with glmmTMB (r-project.org)</a></p>
+<p>Note that xy model terms in GAMs can be used to account for spatial autocorelation</p>
+</section>
+<section id="regression-slopes" class="level1">
+<h1>Regression Slopes</h1>
+<p>For log link slopes to rate of change:</p>
+<p>R = e^β - 1 * 100</p>
+<p>β = ln(r/100+1)</p>
+<p>Where r is the annual rate of change</p>
+<p>M is then slope</p>
+<p>For annual rates of change over time, need to use formula for compound interest:</p>
+<p>CI=(1+r)^t</p>
+<p>r = CI^(1/t) - 1</p>
+<section id="examples" class="level2">
+<h2 class="anchored" data-anchor-id="examples">Examples</h2>
+<p>If slope is -0.02, then annual rate of change is -1.98%. That change compounded over 10 years is -18%.</p>
+<ul>
+<li>50% change over 10 years.</li>
+</ul>
+<p>First get annual rate of change: -6.6697%</p>
+<p>Then calculate slope for 1 year of change on the log scale: -0.06935</p>
+<p>Log slope%, changed for one unit, over 10 years compounded</p>
+<p>-0.02 -2.0% -18%</p>
+<p>-0.0224 -2.21% -20%</p>
+<p>-0.0513 -5.0% -40%</p>
+<p>-0.0693 -6.6697% -50%</p>
+<p>-0.1054 -10% -65% ?</p>
+<p>-0.2231 -20%</p>
+<p>See the CZN Bird monitoring under ref for a worksheet to calculate slopes.</p>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

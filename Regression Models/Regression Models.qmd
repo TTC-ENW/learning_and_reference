@@ -1,0 +1,306 @@
+---
+title: "Regression Models"
+author: "Jeff Matheson"
+date: "December 12, 2023"
+toc: true
+toc-depth: 3
+number-sections: false
+format:
+  html:
+    code-fold: false
+    page-layout: full
+editor: visual
+---
+
+# Introduction
+
+These are my personal notes on regression-type models. They were initial intended for personal use and are therefore a bite rough. I'll update and clean it over time.
+
+The dune data in the vegan package is good example dataset for species occurrence. Use the dune data to work up the example code.
+
+# General Reference
+
+There is some good material here on models and model viz. <https://uvastatlab.github.io/phdplus/index.html>
+
+Reminder about descriptive & explanatory models versus predictive models. Descriptive and explanatory model fit usually evaluted using AIC or similar. Predictive models tested with prediction accuracy (e.g., AUC).
+
+[Inference vs Prediction](https://www.datascienceblog.net/post/commentary/inference-vs-prediction/)
+
+Zero-inflated models:
+
+[Zero-inflated models](https://data.marcoplebani.com/zero-inflated-models/?fbclid=IwAR17JRYLuwbwRK-WdVxAZIgDt45ZX8LvuaESltE-yLCduxF4EjyEYEak-hI)
+
+# Packages
+
+## Packages for assessing data distribution
+
+First use simple frequency histograms using `hist()` of ggplot. `library(vcd)` Fits a discrete (count data) distribution for goodness-of-fit tests.
+
+## Packages for regression-type analyses
+
+Common packages for regression-type analyses library(lme4) GLMMs library(MASS) Negative Binomial GLM library(glmmTMB) for nb and zi, but can do everyhting else too library(pscl) zero-inflated models library(mgcv) GAM
+
+## Packages for evaluating model fit
+
+library(DHARMa) Analysis of residuals for mixed models
+
+## Common packages for interpretting results
+
+library(visreg) regression visualization library(MuMIn) model selection library(effects) for extracting effects terms. Use effects or Alleffects library(emmeans) Estimate marginal means
+
+## Helpers
+
+library(broom) Tidy results tables for exporting and printing library(broom.mixed) Same as above, but for mixed models
+
+library(corrplot) Come back to this and find home
+
+# Mixed Models
+
+This is a really good resource.
+
+[Introduction to linear mixed models](https://ourcodingclub.github.io/tutorials/mixed-models/)
+
+Note implicit vs. explicit nesting.
+
+Explicit nesting can be done by creating a new variable:
+
+dragons \<- within(dragons, sample \<- factor(mountainRange:site))
+
+Good resource from Ben Bolker
+
+[GLMM FAQ (bbolker.github.io)](http://bbolker.github.io/mixedmodels-misc/glmmFAQ.html)
+
+Good walkthrough from Ben Bolker
+
+Recording: [**https://youtu.be/iFikMDuNeVM**](https://youtu.be/iFikMDuNeVM)
+
+[Statistical-Methods-Seminar-Series/bolker_mixedmodels at main · eco4cast/Statistical-Methods-Seminar-Series (github.com)](https://github.com/eco4cast/Statistical-Methods-Seminar-Series/tree/main/bolker_mixedmodels)
+
+# Typical steps for regression
+
+## **STEP 1. Visualize distribution**
+
+```         
+library(vegan)
+data(dune)
+data(dune.env)
+```
+
+Make a histogram using hist() or ggplot(); visually inspect For count data, use package 'vcd' to fit possible disubutions fit.p \<- goodfit(dat\$Richness, type = "poisson") also binomial and nbinomial summary(fit.p) rootogram(fit.p)
+
+## **STEP 2. Fit model**
+
+Use `dredge(model.full)` to fit all possible combinations of variables.
+
+use tibble to tidy up the output from dredge.
+
+Check multi-collinearity.
+
+Use car::vif.
+
+If using glmmTMB, need to use another one like misty.
+
+Zuur recommends that vif \< 2 are fine. Other say vif \< 5 are fine.
+
+## **STEP 3. Compare models**
+
+This is a good intro to model selection:
+
+[Model selection and model averaging](https://uoftcoders.github.io/rcourse/lec09-model-selection.html)
+
+Comare models using package 'MuMin'. model.sel(m1, m2, m3, m4) \*\* Figure out weights and model averaging
+
+Here is some example wording to describe models from Stewart et al. (2020):
+
+> We used the full dataset to create competing Poisson generalized linear mixed models (GLMMs) to predict species abundance using site as a random effect. We included a null model (intercept only), a model with fixed effect for survey type (three levels: in-person, SM2, and SM4), a model with noise as a fixed effect, a model with both noise and survey type as a fixed effect (survey type + noise), and a model that incorporated the interaction between noise and survey type (survey type \* noise). Noise level (0--4) was treated as a linear covariate. We did not test for a year effect because we compared counts conducted at the exact same time and place; therefore, year effect is controlled for by the paired design. We used Akaike's Information Criterion (AIC) to select the most parsimonious of the five models (Akaike 1973, Beier et al. 2001).
+
+Here is another one:
+
+> We used AIC model selection to distinguish among a set of possible models describing the relationship between age, sex, sweetened beverage consumption, and body mass index. The best-fit model, carrying 96% of the cumulative model weight, included every parameter with no interaction effects.
+
+There are some other approaches to variable selection. BAM uses "branching" forward stepwise variable selection.
+
+This might be a solution to trying to fit a full model that has too many variables to fit a model too.
+
+## **STEP 4. Assess model fit.**
+
+If glm, view standard diagnostic plots `plot(model1)` or Examine Residuals for Gaussian `qqnorm(residuals(bestmod))qqline(residuals(bestmod))plot(bestmod,MonYear~resid(.))`
+
+Visreg?
+
+For non-Gaussian and mixed models, use package 'DHARMa' to simulate residuals.
+
+res \<- simulateResiduals(fittedModel = bestmod) plot(res) testDispersion(res) There are other test in 'DHAMRa' to explore. Test for overdispersion. Unlear of these work for mixed models.
+
+``` r
+deviance(bestmod)/df.residual(bestmod)
+# or
+overdisp_fun <- function(model) {
+  rdf <- df.residual(model)
+  rp <- residuals(model,type="pearson")
+  Pearson.chisq <- sum(rp^2)
+  prat <- Pearson.chisq/rdf
+  pval <- pchisq(Pearson.chisq, df=rdf, lower.tail=FALSE)
+  c(chisq=Pearson.chisq,ratio=prat,rdf=rdf,p=pval)
+}
+overdisp_fun(bestmod)
+```
+
+Goodness-of-fit (R2) should be reported. For mixed models, it can be estimated using
+
+`library(MuMIn)`, `r.squaredGLMM()`
+
+Performance of the model can also be evaluated by simulating datasets from the model.
+
+Need to figure out how to do that.
+
+AUC
+
+For binary classification
+
+[Area under the ROC curve - assessing discrimination in logistic regression](https://thestatsgeek.com/2014/05/05/area-under-the-roc-curve-assessing-discrimination-in-logistic-regression/)
+
+pROC and ROCR are the two main packages
+
+## **STEP 5. Estimate Means and Plot**
+
+-   Plot all effects ae \<- allEffects(bestmod) plot(ae, residuals="TRUE") ae Or plot individual effects e \<- predictorEffect("BHC7", bestmod) plot(e)
+-   Package EMMEANS for marginal means
+-   To make predictions, may need to create a grid. expand.grip, tidyr:: expand_grid, modelr::data_grid
+-   What a out predictions for continuous variables? emmE \<- as.data.frame(emmeans(pois.m2, specs="xEasting", at=list(xEasting=seq(-2.03, 1.13, length.out=50))))
+
+**Extract the coefficients data frame**
+
+`x <-summary.glm(Count.model1)$coefficients`
+
+## Many Models
+
+Use the tidy way to first nest the data and then save model outputs in list dataframe. {broomExtra} package also has some important tools. See:[R for Data Science](https://r4ds.had.co.nz/many-models.html)[Broom and Tidy](https://cran.r-project.org/web/packages/broom/vignettes/broom_and_dplyr.html)
+
+Example below from BBFM cavity nest analysis.
+
+``` r
+decay_nest <- decay_nest %>% 
+  mutate(model = map(decay_nest$data, decay_model),
+         tidied = map(model, tidy),
+         glanced = map(model, glance),
+         augmented = map(model, augment),
+         means = map(model, 
+                     ~as.data.frame(emmeans(.x, "Structural_Stage",
+                                            type = "response")))
+         ) %>% 
+  unnest(means)
+```
+
+------------------------------------------------------------------------
+
+# Prediction and Confidence Intervals
+
+Difference between the two.
+
+For mixed models, ideally, would estimate using bootMer, but time-consuming.
+
+``` r
+boot1 <- lme4::bootMer(mod_top, predictors, FUN = "mean", nsim=10, re.form = NA, seed = 123, type="parametric")
+```
+
+There are ways to approximate. See Bolker glmmTMB guide for text.
+
+There is also this package below:
+
+library(merTools) preds \<- predictInterval(lme1, newdata = newDat, n.sims = 999)
+
+Comparison of methods:
+
+[Prediction Intervals from merMod Objects](https://cran.r-project.org/web/packages/merTools/vignettes/Using_predictInterval.html)
+
+See CZN Birds-v2
+
+# Generalized Additive Models
+
+See Gavin Simpson seminar on GAMs. <https://github.com/gavinsimpson/intro-gam-webinar-2020>
+
+-   A GAM is a sum of smooth functions (basis functions or small curves).
+-   Start with using REML as default. Most robust to violation of assumptions.
+-   Categorical variables - can't smooth, but can be included in the model. Can be used as a random effect as well.
+-   Random effects can be fit in gam() and bam() if simple, without having to use gamm() of gamm4(). bs = 're'. See slids for more explanation of options.
+
+Next steps from Gavin Simpson:
+
+-   Read Simon Wood's book!
+-   Lots more material on our ESA GAM Workshop site <https://noamross.github.io/mgcv-esa-workshop/>
+-   Noam Ross' free GAM Course <https://noamross.github.io/gams-in-r-course/>
+
+A couple of papers:
+
+1.  Simpson, G.L., 2018. Modelling Palaeoecological Time Series Using Generalised Additive Models. Frontiers in Ecology and Evolution 6, 149. <https://doi.org/10.3389/fevo.2018.00149>
+2.  Pedersen, E.J., Miller, D.L., Simpson, G.L., Ross, N., 2019. Hierarchical generalized additive models in ecology: an introduction with mgcv. PeerJ 7, e6876. <https://doi.org/10.7717/peerj.6876> \]
+
+Also see:
+
+[Generalised additive models](https://data.marcoplebani.com/category/generalised-additive-models-gams/)
+
+# Spatial Autocorrelation
+
+[How to Identify and Remove Spatial Autocorrelation Effects](https://rfunctions.blogspot.com/2017/06/how-to-identify-and-remove-spatial.html?fbclid=IwAR1FZWk8UQXFdbou4FH9zhXA7m85YzuDCe3_3mPhv5XkjOhLPSvshG2Etd4)
+
+From Bolker, to check for spatial autocorrelation:
+
+``` r
+offdat$res1 <- residuals(mod_top)
+ggplot(offdat, aes(Easting, Northing, colour = res1, size = abs(res1))) +
+  geom_point() +
+  scale_colour_gradient2() +
+  scale_size(range=c(2,7)) +
+  theme_bw()
+```
+
+Here is a vignette on covariance structures.
+
+[Covariance structures with glmmTMB (r-project.org)](https://cran.r-project.org/web/packages/glmmTMB/vignettes/covstruct.html)
+
+Note that xy model terms in GAMs can be used to account for spatial autocorelation
+
+# Regression Slopes
+
+For log link slopes to rate of change:
+
+R = e\^β - 1 \* 100
+
+β = ln(r/100+1)
+
+Where r is the annual rate of change
+
+M is then slope
+
+For annual rates of change over time, need to use formula for compound interest:
+
+CI=(1+r)\^t
+
+r = CI\^(1/t) - 1
+
+## Examples
+
+If slope is -0.02, then annual rate of change is -1.98%. That change compounded over 10 years is -18%.
+
+-   50% change over 10 years.
+
+First get annual rate of change: -6.6697%
+
+Then calculate slope for 1 year of change on the log scale: -0.06935
+
+Log slope%, changed for one unit, over 10 years compounded
+
+-0.02	-2.0%	-18%
+
+-0.0224	-2.21%	-20%
+
+-0.0513	-5.0%	-40%
+
+-0.0693	-6.6697%	-50%
+
+-0.1054	-10%	-65% ?
+
+-0.2231	-20%	
+
+See the CZN Bird monitoring under ref for a worksheet to calculate slopes.
