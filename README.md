@@ -7,4 +7,4 @@ How-tos, examples, and resources. Please feel free to add your own or add to exi
 
 [R General Learning and Reference](https://ttc-enw.github.io/learning_and_reference/2.0%20General%20Learning%20and%20Reference/R%20General%20Leanring%20and%20Reference.html)
 
-[Regression Models](https://ttc-enw.github.io/learning_and_reference/2.0%20General%20Learning%20and%20Reference/Regression%20Models/Regression%20Models.html)
+[Regression Models](https://ttc-enw.github.io/learning_and_reference/Regression%20Models/Regression%20Models.html)
