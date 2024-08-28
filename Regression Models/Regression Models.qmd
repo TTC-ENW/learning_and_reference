@@ -291,16 +291,16 @@ Then calculate slope for 1 year of change on the log scale: -0.06935
 
 Log slope%, changed for one unit, over 10 years compounded
 
--0.02	-2.0%	-18%
+-0.02 -2.0% -18%
 
--0.0224	-2.21%	-20%
+-0.0224 -2.21% -20%
 
--0.0513	-5.0%	-40%
+-0.0513 -5.0% -40%
 
--0.0693	-6.6697%	-50%
+-0.0693 -6.6697% -50%
 
--0.1054	-10%	-65% ?
+-0.1054 -10% -65% ?
 
--0.2231	-20%	
+-0.2231 -20%
 
 See the CZN Bird monitoring under ref for a worksheet to calculate slopes.
