@@ -9,14 +9,14 @@ library(readxl)
 # Create a list of names
 # names <- c("Alice", "Bob", "Charlie", "Diana", "Eve")
 
-survey <- read_excel("C:/Users/jeff.matheson/Downloads/Data Science Tools.xlsx")
+survey <- read_excel("C:/Users/jeff.matheson/Downloads/Data Science Tools(1-27).xlsx")
 
 # Randomly pick a name from the list
 
 Winner <- survey |> 
   filter(!is.na(Name)) |> 
   group_by(Group) |> 
-  sample_n(1) |> 
+  slice_sample(n = 1) |> 
   select(Name)
 
 view(Winner)

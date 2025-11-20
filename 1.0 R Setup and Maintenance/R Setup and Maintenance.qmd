@@ -1,6 +1,6 @@
 ---
 title: "R Setup and Maintenance"
-date: "December 2023"
+date: "November 2025"
 toc: true
 toc-depth: 3
 number-sections: false
@@ -10,6 +10,40 @@ format:
     page-layout: full
 editor: visual
 ---
+
+## Fresh Setup
+
+If you are getting your machine set up for using R for the first time, follow these steps below.
+
+**1) Install R**
+
+-   Download and install R from CRAN: [**https://cran.r-project.org/**](https://cran.r-project.org/)
+
+-   You should be able to install in a user directory and not require admin privileges.
+
+**2) Install R tools**
+
+-   Install Rtools: [**https://cran.r-project.org/bin/windows/Rtools/**](https://cran.r-project.org/bin/windows/Rtools/)
+
+**2) Install RStudio (Posit)**
+
+-   Download and install RStudio Desktop (Posit): [**https://posit.co/download/rstudio-desktop/**](https://posit.co/download/rstudio-desktop/)
+
+-   Launch RStudio and confirm it finds your R installation (Tools → Global Options → R version).
+
+**3) Install Git**
+
+-   Download Git for your OS: [**https://git-scm.com/**](https://git-scm.com/) and install.
+
+**4) Create a GitHub account**
+
+-   Go to [**https://github.com/**](https://github.com/) and sign up for an account.
+
+-   Request to join the TTC-ENW GitHub organization: <https://github.com/TTC-ENW>
+
+**5) Github Setup**
+
+-   Use these instructions for setting up RStudio to use Git. <https://happygitwithr.com/>
 
 ## Keeping R Up To Date
 
@@ -33,6 +67,14 @@ RStudio will let you know when its time.
 
 Its good to keep your packages up to date. There will be a time when a package you are using is not working because some of the dependencies have been updated and your main package has not.
 
-## Github Setup
+## Good Practices
 
-Use these instructions for setting up RStudio to use Git. <https://happygitwithr.com/>
+-   New respositories should start with a 2-letter code. Use underscores to separate words. All lower case.
+
+-   Add a README.md and .gitignore.
+
+-   Repositories should be private, except for material that is not sensitive, like this learning and reference repo.
+
+-   Use short, descriptive commit messages.
+
+-   Push often and pull before working to avoid conflicts.
