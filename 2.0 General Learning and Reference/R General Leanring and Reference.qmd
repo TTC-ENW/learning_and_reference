@@ -27,4 +27,8 @@ A reference nad resource list on all sorts of R topics.
 
 Talks about workflow and "personal R administration", and debugging.
 
+[Statistical Inference via Data Science: A ModernDive into R and the Tidyverse[ (https://moderndive.com/index.htm)
+
+Basic stats entry using tidyverse.  
+
 ## Other Resources
