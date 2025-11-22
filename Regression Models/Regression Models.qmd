@@ -76,6 +76,10 @@ Recording: [**https://youtu.be/iFikMDuNeVM**](https://youtu.be/iFikMDuNeVM)
 
 [Statistical-Methods-Seminar-Series/bolker_mixedmodels at main · eco4cast/Statistical-Methods-Seminar-Series (github.com)](https://github.com/eco4cast/Statistical-Methods-Seminar-Series/tree/main/bolker_mixedmodels)
 
+Another good one.
+
+[Mixed Models wth R] (https://m-clark.github.io/mixed-models-with-R/)
+
 # Typical steps for regression
 
 ## **STEP 1. Visualize distribution**
