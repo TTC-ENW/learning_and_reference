@@ -1,6 +1,6 @@
 ---
 title: "R Setup and Maintenance"
-date: "November 2025"
+date: "January 2026"
 toc: true
 toc-depth: 3
 number-sections: false
@@ -25,11 +25,17 @@ If you are getting your machine set up for using R for the first time, follow th
 
 -   Install Rtools: [**https://cran.r-project.org/bin/windows/Rtools/**](https://cran.r-project.org/bin/windows/Rtools/)
 
-**2) Install RStudio (Posit)**
+**3) Install Poist RStudio or Positron**
 
--   Download and install RStudio Desktop (Posit): [**https://posit.co/download/rstudio-desktop/**](https://posit.co/download/rstudio-desktop/)
+-   RStudio and Poistron are both Integrated Developent Environments for data science from Posit.
 
--   Launch RStudio and confirm it finds your R installation (Tools → Global Options → R version).
+-   RStudio has been the standard for R data science. Positron is the next generation successor. RStudio will still be maintained and available for many year, however Posit's development efforts will be on Positron.
+
+-   If you are starting fresh and learning (or re-learning R), Positron may be the best avenue. Download and install here: [Positron](https://positron.posit.co/).
+
+-   Or download and install RStudio Desktop (Posit): [**https://posit.co/download/rstudio-desktop/**](https://posit.co/download/rstudio-desktop/)
+
+-   Launch RStudio/Positron and confirm it finds your R installation.
 
 **3) Install Git**
 
@@ -44,6 +50,7 @@ If you are getting your machine set up for using R for the first time, follow th
 **5) Github Setup**
 
 -   Use these instructions for setting up RStudio to use Git. <https://happygitwithr.com/>
+-   For Positron, I don't see any single source that i the perfect guide. Search for instructions.
 
 ## Keeping R Up To Date
 
@@ -59,22 +66,26 @@ updateR()
 
 After R has been updated in the basic R interface, you will probably need to tell RStudio where to find the version you would like to use (usually the latest) under Tools \> Global Options.
 
-## Keeping RStudio Up To Date
+## Keeping RStudio and Positron Up To Date
 
-RStudio will let you know when its time.
+RStudio will let you know when its time. Positron automatically checks for updates.
 
 ## Package Updates
 
-Its good to keep your packages up to date. There will be a time when a package you are using is not working because some of the dependencies have been updated and your main package has not.
+Its good to keep your packages up to date (unless there is a need to maintain an earlier version to maintain compatibility for a specific project and use). There will be a time when a package you are using is not working because some of the dependencies have been updated and your main package has not (or vice versa).
+
+In RStudio, use the menu item "Check for Package Updates".
+
+In Positron, there is no built-in package helper. Can use `old.packages()` to list them and then decide to re-install.
 
 ## Good Practices
 
--   New respositories should start with a 2-letter code. Use underscores to separate words. All lower case.
+-   New repositories should start with a 2-letter code. Use underscores to separate words. All lower case.
 
--   Add a README.md and .gitignore.
+-   Add a README.md and .gitignore (using R template).
 
 -   Repositories should be private, except for material that is not sensitive, like this learning and reference repo.
 
 -   Use short, descriptive commit messages.
 
--   Push often and pull before working to avoid conflicts.
+-   Push often and pull before working to avoid conflicts. If there will be more than one person working with a repo at the same time, best to make a new branch, complete your updates, and then do a pull-request to merge with main.

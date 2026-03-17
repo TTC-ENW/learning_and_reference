@@ -1,7 +1,9 @@
 # ==============================================================================
 # ANOVA tutorial script (PlantGrowth)
 # Purpose: Demonstrate one-way ANOVA workflow: visualize, check distribution,
-# fit aov, review diagnostics (base R), summary, means table with SE and 95% CI,
+# fit aov, review diagnostics (base R), summary, means table with SE and 95% CI
+# Author: Jeff
+# Date: March 16
 # ==============================================================================
 
 
@@ -31,14 +33,14 @@ pg <- pg |> mutate(group = factor(group, levels = c("ctrl", "trt1", "trt2")))
 # 3. Visualize raw data ----------------------------------------------------
 
 # Using base R
-plot(weight ~ group, data = pg)
+plot(weight ~ group, data = pg)    # defaults to boxplot for categorical x
 
 # Using ggplot2
-# Try jittered boxplot with points to show raw observations by group
+# Also try jittered boxplot with points to show raw observations by group
 p_raw <- ggplot(pg, aes(x = group, y = weight, color = group)) +
   geom_boxplot() +
-  geom_point() +
-#  geom_jitter(width = 0.12, size = 2) +
+#  geom_point() +
+  geom_jitter(width = 0.12, size = 2) +
   labs(title = "Plant weight by treatment group",
        x = "Group", y = "Weight (g)") +
   theme_bw() +
@@ -47,7 +49,7 @@ p_raw <- ggplot(pg, aes(x = group, y = weight, color = group)) +
 print(p_raw)
 
 
-# 4. Check distribution of response -----------------------------------------
+# 4. Check distribution of raw response--------------------------------------
 # Histogram + density
 ggplot(pg, aes(x = weight)) +
   geom_histogram(bins = 12, fill = "lightblue", color = "grey40") +
@@ -57,6 +59,7 @@ ggplot(pg, aes(x = weight)) +
 # 5. Fit ANOVA model --------------------------------------------------------
 # Using aov (one-way ANOVA)
 model_aov <- aov(weight ~ group, data = pg)
+summary(model_aov)
 
 # Alternative: lm gives equivalent coefficients for this design
 model_lm <- lm(weight ~ group, data = pg)
@@ -69,8 +72,8 @@ par(mfrow = c(2, 2))      # 2x2 layout
 plot(model_aov)           # 4 standard diagnostic plots
 par(mfrow = c(1, 1))      # reset layout
 
-# Shapiro-Wilk test on residuals
-# Use this for  other evidence, rather than yes/no
+# Shapiro-Wilk and Lwvene test on residuals
+# Use this for other evidence, rather than yes/no
 shapiro.test(residuals(model_aov))
 leveneTest(weight ~ group, data = pg, center = median)
 
@@ -101,7 +104,7 @@ means_tbl <- pg |>
   )
 means_tbl
 
-# The above works fine in this case. For more complicated models, best to use a helper package called emmeans. 
+# The above works fine in this case. For more complicated models, best to use the helper package emmeans. 
 emm <- emmeans(model_aov, specs = "group")
 summary(emm)
 
@@ -114,13 +117,7 @@ tidy(summary(emm))
 # Version 1: 
 TukeyHSD(model_aov)
 
-# Tidy Tukey output (simple conversion)
-# Convert to a tibble for nicer printing and export
-tukey_tbl <- as.data.frame(tukey$group) |>
-  rownames_to_column("comparison") |>
-  as_tibble()
-tukey_tbl
-
+# Version 2: Use the emmeans package. Also does Tukey's HSD in case but also does more sophisticated comparison when Tukey's HSD cannot be done. 
 emmeans::contrast(emm, method = "pairwise")
 
 

@@ -2,11 +2,11 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.8.25">
+<meta name="generator" content="quarto-1.8.26">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2025-11-01">
+<meta name="dcterms.date" content="2026-01-01">
 
 <title>R Setup and Maintenance</title>
 <style>
@@ -67,7 +67,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="R Setup and Maintenance_files/libs/quarto-html/tippy.umd.min.js"></script>
 <script src="R Setup and Maintenance_files/libs/quarto-html/anchor.min.js"></script>
 <link href="R Setup and Maintenance_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="R Setup and Maintenance_files/libs/quarto-html/quarto-syntax-highlighting-7b89279ff1a6dce999919e0e67d4d9ec.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="R Setup and Maintenance_files/libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="R Setup and Maintenance_files/libs/bootstrap/bootstrap.min.js"></script>
 <link href="R Setup and Maintenance_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="R Setup and Maintenance_files/libs/bootstrap/bootstrap-9e3ffae467580fdb927a41352e75a2e0.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
@@ -85,7 +85,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul>
   <li><a href="#fresh-setup" id="toc-fresh-setup" class="nav-link active" data-scroll-target="#fresh-setup">Fresh Setup</a></li>
   <li><a href="#keeping-r-up-to-date" id="toc-keeping-r-up-to-date" class="nav-link" data-scroll-target="#keeping-r-up-to-date">Keeping R Up To Date</a></li>
-  <li><a href="#keeping-rstudio-up-to-date" id="toc-keeping-rstudio-up-to-date" class="nav-link" data-scroll-target="#keeping-rstudio-up-to-date">Keeping RStudio Up To Date</a></li>
+  <li><a href="#keeping-rstudio-and-positron-up-to-date" id="toc-keeping-rstudio-and-positron-up-to-date" class="nav-link" data-scroll-target="#keeping-rstudio-and-positron-up-to-date">Keeping RStudio and Positron Up To Date</a></li>
   <li><a href="#package-updates" id="toc-package-updates" class="nav-link" data-scroll-target="#package-updates">Package Updates</a></li>
   <li><a href="#good-practices" id="toc-good-practices" class="nav-link" data-scroll-target="#good-practices">Good Practices</a></li>
   </ul>
@@ -106,7 +106,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">November 1, 2025</p>
+      <p class="date">January 1, 2026</p>
     </div>
   </div>
   
@@ -130,10 +130,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <ul>
 <li>Install Rtools: <a href="https://cran.r-project.org/bin/windows/Rtools/"><strong>https://cran.r-project.org/bin/windows/Rtools/</strong></a></li>
 </ul>
-<p><strong>2) Install RStudio (Posit)</strong></p>
+<p><strong>3) Install Poist RStudio or Positron</strong></p>
 <ul>
-<li><p>Download and install RStudio Desktop (Posit): <a href="https://posit.co/download/rstudio-desktop/"><strong>https://posit.co/download/rstudio-desktop/</strong></a></p></li>
-<li><p>Launch RStudio and confirm it finds your R installation (Tools → Global Options → R version).</p></li>
+<li><p>RStudio and Poistron are both Integrated Developent Environments for data science from Posit.</p></li>
+<li><p>RStudio has been the standard for R data science. Positron is the next generation successor. RStudio will still be maintained and available for many year, however Posit’s development efforts will be on Positron.</p></li>
+<li><p>If you are starting fresh and learning (or re-learning R), Positron may be the best avenue. Download and install here: <a href="https://positron.posit.co/">Positron</a>.</p></li>
+<li><p>Or download and install RStudio Desktop (Posit): <a href="https://posit.co/download/rstudio-desktop/"><strong>https://posit.co/download/rstudio-desktop/</strong></a></p></li>
+<li><p>Launch RStudio/Positron and confirm it finds your R installation.</p></li>
 </ul>
 <p><strong>3) Install Git</strong></p>
 <ul>
@@ -147,6 +150,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><strong>5) Github Setup</strong></p>
 <ul>
 <li>Use these instructions for setting up RStudio to use Git. <a href="https://happygitwithr.com/" class="uri">https://happygitwithr.com/</a></li>
+<li>For Positron, I don’t see any single source that i the perfect guide. Search for instructions.</li>
 </ul>
 </section>
 <section id="keeping-r-up-to-date" class="level2">
@@ -159,22 +163,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>After R has been updated in the basic R interface, you will probably need to tell RStudio where to find the version you would like to use (usually the latest) under Tools &gt; Global Options.</p>
 </section>
-<section id="keeping-rstudio-up-to-date" class="level2">
-<h2 class="anchored" data-anchor-id="keeping-rstudio-up-to-date">Keeping RStudio Up To Date</h2>
-<p>RStudio will let you know when its time.</p>
+<section id="keeping-rstudio-and-positron-up-to-date" class="level2">
+<h2 class="anchored" data-anchor-id="keeping-rstudio-and-positron-up-to-date">Keeping RStudio and Positron Up To Date</h2>
+<p>RStudio will let you know when its time. Positron automatically checks for updates.</p>
 </section>
 <section id="package-updates" class="level2">
 <h2 class="anchored" data-anchor-id="package-updates">Package Updates</h2>
-<p>Its good to keep your packages up to date. There will be a time when a package you are using is not working because some of the dependencies have been updated and your main package has not.</p>
+<p>Its good to keep your packages up to date (unless there is a need to maintain an earlier version to maintain compatibility for a specific project and use). There will be a time when a package you are using is not working because some of the dependencies have been updated and your main package has not (or vice versa).</p>
+<p>In RStudio, use the menu item “Check for Package Updates”.</p>
+<p>In Positron, the there is no such built-in package helper. Can use <code>old.packages()</code> to list them and then decide to re-install.</p>
 </section>
 <section id="good-practices" class="level2">
 <h2 class="anchored" data-anchor-id="good-practices">Good Practices</h2>
 <ul>
-<li><p>New respositories should start with a 2-letter code. Use underscores to separate words. All lower case.</p></li>
-<li><p>Add a README.md and .gitignore.</p></li>
+<li><p>New repositories should start with a 2-letter code. Use underscores to separate words. All lower case.</p></li>
+<li><p>Add a README.md and .gitignore (using R template).</p></li>
 <li><p>Repositories should be private, except for material that is not sensitive, like this learning and reference repo.</p></li>
 <li><p>Use short, descriptive commit messages.</p></li>
-<li><p>Push often and pull before working to avoid conflicts.</p></li>
+<li><p>Push often and pull before working to avoid conflicts. If there will be more than one person working with a repo at the same time, best to make a new branch, complete your updates, and then do a pull-request to merge with main.</p></li>
 </ul>
 </section>
 
