@@ -11,3 +11,6 @@ How-tos, examples, and resources. Please feel free to add your own or add to exi
 [Regression Models](https://ttc-enw.github.io/learning_and_reference/Regression%20Models/Regression%20Models.html)
 
 [ANOVA Tutorial](https://github.com/TTC-ENW/learning_and_reference/blob/main/Regression%20Models/ANOVA%20and%20Basic%20Regression.R). Step through this R script.
+
+[Accessing files on Sharepoint using Microsoft365R](https://github.com/TTC-ENW/learning_and_reference/blob/main/3.0%20Tools%20and%20Utilities/Sharepoint_file_access_walkthrough.R) We are now able to access files on Sharepoint, OneDrive, and Teams using the Microsoft365R package. This is a walkthrough of how to set up the connection and access files.
+
