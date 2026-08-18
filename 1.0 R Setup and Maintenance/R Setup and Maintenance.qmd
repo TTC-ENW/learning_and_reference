@@ -17,40 +17,40 @@ If you are getting your machine set up for using R for the first time, follow th
 
 **1) Install R**
 
--   Download and install R from CRAN: [**https://cran.r-project.org/**](https://cran.r-project.org/)
+- Download and install R from CRAN: [**https://cran.r-project.org/**](https://cran.r-project.org/)
 
--   You should be able to install in a user directory and not require admin privileges.
+- You should be able to install in a user directory and not require admin privileges.
 
 **2) Install R tools**
 
--   Install Rtools: [**https://cran.r-project.org/bin/windows/Rtools/**](https://cran.r-project.org/bin/windows/Rtools/)
+- Install Rtools: [**https://cran.r-project.org/bin/windows/Rtools/**](https://cran.r-project.org/bin/windows/Rtools/)
 
 **3) Install Poist RStudio or Positron**
 
--   RStudio and Poistron are both Integrated Developent Environments for data science from Posit.
+- RStudio and Poistron are both Integrated Developent Environments for data science from Posit.
 
--   RStudio has been the standard for R data science. Positron is the next generation successor. RStudio will still be maintained and available for many year, however Posit's development efforts will be on Positron.
+- RStudio has been the standard for R data science. Positron is the next generation successor. RStudio will still be maintained and available for many year, however Posit's development efforts will be on Positron.
 
--   If you are starting fresh and learning (or re-learning R), Positron may be the best avenue. Download and install here: [Positron](https://positron.posit.co/).
+- If you are starting fresh and learning (or re-learning R), Positron may be the best avenue. Download and install here: [Positron](https://positron.posit.co/).
 
--   Or download and install RStudio Desktop (Posit): [**https://posit.co/download/rstudio-desktop/**](https://posit.co/download/rstudio-desktop/)
+- Or download and install RStudio Desktop (Posit): [**https://posit.co/download/rstudio-desktop/**](https://posit.co/download/rstudio-desktop/)
 
--   Launch RStudio/Positron and confirm it finds your R installation.
+- Launch RStudio/Positron and confirm it finds your R installation.
 
 **3) Install Git**
 
--   Download Git for your OS: [**https://git-scm.com/**](https://git-scm.com/) and install.
+- Download Git for your OS: [**https://git-scm.com/**](https://git-scm.com/) and install.
 
 **4) Create a GitHub account**
 
--   Go to [**https://github.com/**](https://github.com/) and sign up for an account.
+- Go to [**https://github.com/**](https://github.com/) and sign up for an account.
 
--   Request to join the TTC-ENW GitHub organization: <https://github.com/TTC-ENW>
+- Request to join the TTC-ENW GitHub organization: <https://github.com/TTC-ENW>
 
 **5) Github Setup**
 
--   Use these instructions for setting up RStudio to use Git. <https://happygitwithr.com/>
--   For Positron, I don't see any single source that i the perfect guide. Search for instructions.
+- Use these instructions for setting up RStudio to use Git. <https://happygitwithr.com/>
+- For Positron, I don't see any single source that i the perfect guide. Search for instructions.
 
 ## Keeping R Up To Date
 
@@ -76,16 +76,61 @@ Its good to keep your packages up to date (unless there is a need to maintain an
 
 In RStudio, use the menu item "Check for Package Updates".
 
-In Positron, there is no built-in package helper. Can use `old.packages()` to list them and then decide to re-install.
+In Positron, there is now a built-in package helper and it sin the Activity Bar on the left.
+
+The package "pak" is a fast modern installer that is supposed to be better for package installation.
+
+```{R}
+#| eval: false
+pak::pkg_install()
+```
 
 ## Good Practices
 
--   New repositories should start with a 2-letter code. Use underscores to separate words. All lower case.
+- New repositories should start with a 2-letter code. Use underscores to separate words. All lower case.
 
--   Add a README.md and .gitignore (using R template).
+- Add a README.md and .gitignore (using R template).
 
--   Repositories should be private, except for material that is not sensitive, like this learning and reference repo.
+- Repositories should be private, except for material that is not sensitive, like this learning and reference repo.
 
--   Use short, descriptive commit messages.
+- Use short, descriptive commit messages.
 
--   Push often and pull before working to avoid conflicts. If there will be more than one person working with a repo at the same time, best to make a new branch, complete your updates, and then do a pull-request to merge with main.
+- Push often and pull before working to avoid conflicts. If there will be more than one person working with a repo at the same time, best to make a new branch, complete your updates, and then do a pull-request to merge with main.
+
+# Example Script Structure
+
+```{R}
+#| eval: false
+
+# ==============================================================================
+# Project Name
+# Script Name
+# Author
+# Date
+# ==============================================================================
+
+# Describe the purpose of the script and any other info that another user or 
+# you in the future should know.
+
+# ==============================================================================
+# Section Heading (if its long script)
+# ==============================================================================
+
+## Section or Subsection Heading -----------------------------------------------
+
+# Comment
+
+## Setup -----------------------------------------------------------------------
+
+# Load libraries
+library() # or
+pacman::p_load()   # installs package if not already installed and then loads library
+
+## Data import and prep --------------------------------------------------------
+
+## Analysis --------------------------------------------------------------------
+
+## Plots etc... ----------------------------------------------------------------
+
+
+```
