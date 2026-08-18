@@ -99,6 +99,8 @@ pak::pkg_install()
 
 # Example Script Structure
 
+Below is an example of using some title and heading structure to make a script more readable and easier to understand.
+
 ```{R}
 #| eval: false
 
